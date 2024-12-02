@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная страница{% endblock %}
+
+{% block content %}
+    <!-- Подключение Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIfxg/XmMmlH/w7/JvYhwFsn39J9vMNCea8lEN+DeMmg5bXtAZkzXhXyFzQ5RP" crossorigin="anonymous">
+
+    <style>
+        /* Адаптивный стиль */
+        @media screen and (max-width: 768px) {
+            .post {
+                margin-bottom: 20px;
+            }
+
+            .container {
+                padding: 10px;
+            }
+
+            .btn {
+                width: 100%;  /* Чтобы кнопки были шириной на весь экран */
+                padding: 10px;
+            }
+
+            img {
+                width: 100%;
+                height: auto;
+            }
+        }
+    </style>
+
+    <div class="container">
+        <h1>Добро пожаловать на главную страницу!</h1>
+
+        <h2>Посты</h2>
+
+        <!-- Проверка на авторизованного пользователя -->
+        {% if user.is_authenticated %}
+            <p>Привет, {{ user.username }}!</p>
+            <a href="{% url 'logout' %}" class="btn btn-primary">Выйти</a>
+        {% else %}
+            <a href="{% url 'login' %}" class="btn btn-primary">Войти</a> |
+            <a href="{% url 'register' %}" class="btn btn-secondary">Зарегистрироваться</a>
+        {% endif %}
+
+        <div class="row">
+            {% for post in posts %}
+                <div class="col-md-4 col-sm-12">
+                    <div class="post mb-4">
+                        <h3>{{ post.title }}</h3>
+
+                        <!-- Проверка и отображение изображения с классом img-fluid -->
+                        {% if post.image %}
+                            <img src="{{ post.image.url }}" alt="{{ post.title }}" class="img-fluid mb-3">
+                        {% endif %}
+
+                        <p><strong>Тип:</strong> {{ post.get_post_type_display }}</p>
+                        <p>{{ post.content|slice:":500" }}...</p>
+
+                        <!-- Скрытый контент -->
+                        <div class="post-content" id="post-content-{{ post.id }}" style="display: none;">
+                            <p>{{ post.content }}</p>
+                        </div>
+
+                        <!-- Кнопка "Читать далее" -->
+                        <button class="btn btn-info" onclick="toggleContent({{ post.id }})">Читать далее</button>
+                    </div>
+                    <hr>
+                </div>
+            {% empty %}
+                <p class="empty-message">Посты отсутствуют.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        function toggleContent(postId) {
+            var content = document.getElementById('post-content-' + postId);
+            var button = content.previousElementSibling;  // Кнопка "Читать далее"
+
+            if (content.style.display === "none" || content.style.display === "") {
+                content.style.display = "block";
+                button.textContent = "Скрыть";
+            } else {
+                content.style.display = "none";
+                button.textContent = "Читать далее";
+            }
+        }
+    </script>
+{% endblock %}

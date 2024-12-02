@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Мои билеты{% endblock %}
+
+{% block content %}
+<h1>Мои билеты</h1>
+
+{% if tickets %}
+    <ul>
+        {% for ticket in tickets %}
+            <li>
+                <strong>Фильм:</strong> {{ ticket.movie_name }} <br>
+                <strong>Сеанс:</strong> {{ ticket.session_time }} <br>
+                <strong>Место:</strong> {{ ticket.seat_number }}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>У вас нет купленных билетов.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Список фильмов{% endblock %}
+
+{% block content %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Список фильмов</h1>
+
+    <!-- Форма поиска -->
+    <div class="row mb-4">
+        <div class="col-md-6 offset-md-3">
+            <form method="GET" action="{% url 'movie_list' %}" class="input-group">
+                {{ form.as_p }}
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="submit">Поиск</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Вывод фильмов -->
+    <div class="row">
+        {% if movies %}
+            {% for movie in movies %}
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm" style="border-radius: 10px;">
+                        {% if movie.poster %}
+                            <img src="{{ movie.poster.url }}" class="card-img-top" alt="{{ movie.title }}" style="height: 350px; object-fit: cover; border-radius: 10px 10px 0 0;">
+                        {% else %}
+                            <img src="https://via.placeholder.com/300x450" class="card-img-top" alt="No image available" style="height: 350px; object-fit: cover; border-radius: 10px 10px 0 0;">
+                        {% endif %}
+                        <div class="card-body" style="text-align: center;">
+                            <h5 class="card-title">{{ movie.title }}</h5>
+                            <p class="card-text text-muted">{{ movie.description|slice:":100" }}...</p>
+                            <p><strong>Рейтинг:</strong> {{ movie.rating|default:"N/A" }}/10</p>
+                            <a href="{% url 'buy_ticket' movie.id %}" class="btn btn-primary btn-block">Купить билет</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-center">По вашему запросу фильмов не найдено.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

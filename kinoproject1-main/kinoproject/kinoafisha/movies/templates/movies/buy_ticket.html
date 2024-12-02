@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Купить билет{% endblock %}
+
+{% block content %}
+    <h1>Купить билет на {{ movie.title }}</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Купить билет</button>
+    </form>
+
+    <a href="{% url 'movie_list' %}">Вернуться к списку фильмов</a>
+{% endblock %}
